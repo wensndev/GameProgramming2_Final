@@ -3,16 +3,8 @@ using Game.Data;
 
 namespace Game.World;
 
-/// <summary>
-/// Moves an entity by its velocity and resolves tile collisions using AABB.
-/// X axis is resolved first so vertical surfaces don't incorrectly block jumps.
-/// </summary>
 public static class CollisionHelper
 {
-    /// <summary>
-    /// Applies dt-scaled movement then pushes the entity out of any solid tiles.
-    /// Sets onGround = true when a solid tile exists directly below the entity.
-    /// </summary>
     public static void Move(
         ref Vector2 position, ref Vector2 velocity,
         int width, int height,
@@ -22,7 +14,6 @@ public static class CollisionHelper
         onGround = false;
         int ts = GameConstants.TileSize;
 
-        // Resolve horizontal movement first
         position.X += velocity.X * dt;
         int rMin = (int)(position.Y / ts);
         int rMax = (int)((position.Y + height - 1) / ts);
@@ -33,7 +24,7 @@ public static class CollisionHelper
             for (int r = rMin; r <= rMax; r++)
             {
                 if (!map.IsSolid(c, r)) continue;
-                position.X = c * ts - width; // push left to wall edge
+                position.X = c * ts - width;
                 velocity.X = 0;
                 break;
             }
@@ -44,13 +35,12 @@ public static class CollisionHelper
             for (int r = rMin; r <= rMax; r++)
             {
                 if (!map.IsSolid(c, r)) continue;
-                position.X = (c + 1) * ts; // push right to wall edge
+                position.X = (c + 1) * ts;
                 velocity.X = 0;
                 break;
             }
         }
 
-        // Resolve vertical movement after horizontal
         position.Y += velocity.Y * dt;
         int cMin = (int)(position.X / ts);
         int cMax = (int)((position.X + width - 1) / ts);
@@ -61,13 +51,13 @@ public static class CollisionHelper
             for (int c = cMin; c <= cMax; c++)
             {
                 if (!map.IsSolid(c, r)) continue;
-                position.Y = r * ts - height; // land on top of tile
+                position.Y = r * ts - height;
                 velocity.Y = 0;
                 onGround = true;
                 break;
             }
         }
-        else if (velocity.Y < 0) // jumping
+        else if (velocity.Y < 0)
         {
             int r = (int)(position.Y / ts);
             for (int c = cMin; c <= cMax; c++)
@@ -79,7 +69,6 @@ public static class CollisionHelper
             }
         }
 
-        // Check one pixel below the entity to detect ground when velocity.Y is already 0
         if (!onGround)
         {
             int r = (int)((position.Y + height + 1) / ts);

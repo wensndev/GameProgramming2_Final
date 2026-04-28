@@ -1,4 +1,4 @@
-// Gerçek ses varlıkları eklendiğinde buradaki yorumlar kaldırılır.
+// its placeholder
 // using Microsoft.Xna.Framework.Audio;
 // using Microsoft.Xna.Framework.Media;
 
