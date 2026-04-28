@@ -1,0 +1,22 @@
+# Build output
+bin/
+obj/
+
+# MonoGame content pipeline cache
+Content/bin/
+Content/obj/
+
+# Visual Studio / Rider
+.vs/
+.vscode/
+.claude/
+.idea/
+*.user
+*.suo
+*.userprefs
+ARCHITECTURE.md
+
+
+# OS
+.DS_Store
+Thumbs.db
