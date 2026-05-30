@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using Game.Core;
 using Game.Data;
 
 namespace Game.Entities;
@@ -21,6 +22,15 @@ public class MutantEnemy : Enemy
         Width = 28;
         Height = 38;
         Velocity.X = PatrolSpeed;
+
+        // Override the walk animation with the mutant-specific sheet if available.
+        // HasDedicatedMutantSheet: 28×38 frames. Fallback: enemy sheet uses 24×32 frames.
+        if (AssetManager.MutantSheet != null)
+        {
+            int fw = AssetManager.HasDedicatedMutantSheet ? 28 : 24;
+            int fh = AssetManager.HasDedicatedMutantSheet ? 38 : 32;
+            _walkAnim = new AnimatedSprite(AssetManager.MutantSheet, fw, fh, startFrame: 0, frameCount: 3, frameTime: 0.15f);
+        }
     }
 
     public override void Update(GameTime gameTime)

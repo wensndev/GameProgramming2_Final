@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Game.Data;
@@ -14,6 +15,9 @@ public class CombatSystem
 
     public int KilledCount { get; private set; }
     public int CuredCount { get; private set; }
+
+    public event Action OnEnemyKilled;
+    public event Action OnEnemyCured;
 
     private float _contactCooldown;
 
@@ -67,6 +71,7 @@ public class CombatSystem
                     enemy.Cure();
                     CuredCount++;
                     _infection.Decrease(0.1f);
+                    OnEnemyCured?.Invoke();
                 }
                 else
                 {
@@ -75,6 +80,7 @@ public class CombatSystem
                     {
                         KilledCount++;
                         _infection.Increase(0.05f);
+                        OnEnemyKilled?.Invoke();
                     }
                 }
                 break;

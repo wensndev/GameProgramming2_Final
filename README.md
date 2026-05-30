@@ -44,4 +44,5 @@ Your ending depends on your choices:
 
 - There are paper notes scattered around the level (gold squares). Walk over them to collect. Press **Tab** to read them.
 - Your **infection level** rises when you kill an enemy (+5%) and when you speak to the NPC (+15%). It drops when you cure an enemy (-10%). Watch the bar at the bottom of the screen.
-- All visuals are drawn with coloured rectangles — no image assets are required to run the game.
+- Visuals use simple sprite sheets under `Content/Sprites/`. If the files are missing the game falls back to coloured rectangles automatically.
+- Audio is file-based WAV loaded from `Content/Audio/` (shoot, hit, cure SFX + looping background music). No external dependencies required.

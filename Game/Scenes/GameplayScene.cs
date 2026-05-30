@@ -30,11 +30,13 @@ public class GameplayScene : IScene
     private InfectionBar _infectionBar;
     private DialogueBox _dialogueBox;
     private NotePanel _notePanel;
+    private AudioManager _audio;
 
     public GameplayScene(SceneManager sceneManager) => _sceneManager = sceneManager;
 
     public void Load()
     {
+        _audio = new AudioManager();
         _level = new Level();
         _camera = new Camera2D();
         _enemies = new List<Enemy>();
@@ -46,7 +48,11 @@ public class GameplayScene : IScene
         _notes = new NoteSystem();
 
         _player = new Player(_level.PlayerSpawn);
-        _player.OnShoot += (pos, right, isCure) => _projectiles.Add(new Projectile(pos, right, isCure));
+        _player.OnShoot += (pos, right, isCure) =>
+        {
+            _projectiles.Add(new Projectile(pos, right, isCure));
+            _audio.PlayShoot();
+        };
 
         _dialogue.OnComplete += () =>
         {
@@ -85,15 +91,19 @@ public class GameplayScene : IScene
         }
 
         _combat = new CombatSystem(_player, _enemies, _projectiles, _infection);
+        _combat.OnEnemyKilled += () => _audio.PlayHit();
+        _combat.OnEnemyCured  += () => _audio.PlayCure();
 
         int hudY = GameConstants.WindowHeight - 50;
         _healthBar = new HealthBar(new Vector2(20, hudY));
         _infectionBar = new InfectionBar(new Vector2(260, hudY));
         _dialogueBox = new DialogueBox(_dialogue);
         _notePanel = new NotePanel(_notes);
+
+        _audio.StartMusic();
     }
 
-    public void Unload() { }
+    public void Unload() { _audio?.StopMusic(); _audio?.Dispose(); }
 
     public void Update(GameTime gameTime)
     {

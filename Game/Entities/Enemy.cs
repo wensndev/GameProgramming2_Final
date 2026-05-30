@@ -1,4 +1,7 @@
+using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Game.Core;
 using Game.Data;
 using Game.World;
 
@@ -11,15 +14,24 @@ public class Enemy : Entity
     protected float PatrolSpeed = 55f;
     protected float PatrolRange = 96f;
     private Vector2 _startPosition;
+    private float _pulseTimer;
+
+    // Sprite animation — null when sheet is unavailable (rectangle fallback active).
+    // Protected so MutantEnemy can replace it with its own sheet.
+    protected AnimatedSprite _walkAnim;
 
     public Enemy(Vector2 position)
     {
-        Position = position;
+        Position       = position;
         _startPosition = position;
-        Width = 24;
-        Height = 32;
-        DrawColor = Microsoft.Xna.Framework.Color.IndianRed;
-        Velocity.X = PatrolSpeed;
+        Width          = 24;
+        Height         = 32;
+        DrawColor      = Color.IndianRed;
+        Velocity.X     = PatrolSpeed;
+
+        var sheet = AssetManager.EnemySheet;
+        if (sheet != null)
+            _walkAnim = new AnimatedSprite(sheet, 24, 32, startFrame: 0, frameCount: 3, frameTime: 0.15f);
     }
 
     public void TakeDamage(int amount)
@@ -30,16 +42,45 @@ public class Enemy : Entity
 
     public void Cure()
     {
-        IsCured = true;
+        IsCured    = true;
         Velocity.X = 0;
-        DrawColor = Color.LightGreen;
+        DrawColor  = Color.LightGreen;
     }
 
     public override void Update(GameTime gameTime)
     {
+        _pulseTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
         if (!IsActive || IsCured) return;
+        _walkAnim?.Update(gameTime);
         if (Position.X > _startPosition.X + PatrolRange) Velocity.X = -PatrolSpeed;
         if (Position.X < _startPosition.X - PatrolRange) Velocity.X = PatrolSpeed;
+    }
+
+    public override void Draw(SpriteBatch spriteBatch)
+    {
+        if (!IsActive) return;
+
+        if (_walkAnim != null)
+        {
+            // ── Sprite path ──────────────────────────────────────────────────
+            // Flip sprite to face the direction of movement.
+            var effects = Velocity.X < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            // Cured enemies draw with a green tint instead of keeping a separate sprite.
+            Color tint = IsCured ? Color.LightGreen : Color.White;
+            _walkAnim.Draw(spriteBatch, Position, tint, effects);
+        }
+        else
+        {
+            // ── Rectangle fallback (preserves original pulse animation) ─────
+            if (IsCured)
+            {
+                base.Draw(spriteBatch);
+                return;
+            }
+            float pulse  = 0.72f + 0.28f * (float)Math.Sin(_pulseTimer * 3.5f);
+            var pulsed   = new Color((int)(DrawColor.R * pulse), (int)(DrawColor.G * pulse), (int)(DrawColor.B * pulse));
+            AssetManager.DrawRect(spriteBatch, Bounds, pulsed);
+        }
     }
 
     public void ApplyPhysics(TileMap map, float dt)
