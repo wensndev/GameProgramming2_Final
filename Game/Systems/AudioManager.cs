@@ -13,7 +13,6 @@ public class AudioManager : IDisposable
     private SoundEffect _musicSfx;
     private SoundEffectInstance _musicInstance;
 
-    // Candidate file names checked in order for each role.
     private static readonly string[] MusicNames  = { "music.wav", "bgm.wav", "background.wav", "ambient.wav" };
     private static readonly string[] ShootNames  = { "shoot.wav", "fire.wav", "gun.wav" };
     private static readonly string[] HitNames    = { "hit.wav", "damage.wav", "enemy_hit.wav" };
@@ -38,7 +37,6 @@ public class AudioManager : IDisposable
         Console.WriteLine($"[Audio] music={musicFile ?? "none"}  shoot={shootFile ?? "none"}  hit={hitFile ?? "none"}  cure={cureFile ?? "none"}");
     }
 
-    // ── Public API ────────────────────────────────────────────────────────────
 
     public void StartMusic()
     {
@@ -60,7 +58,6 @@ public class AudioManager : IDisposable
     public void PlayShoot() => _shootSfx?.Play(0.5f, 0f, 0f);
     public void PlayHit()   => _hitSfx?.Play(0.6f, 0f, 0f);
 
-    // Falls back to PlayHit() if no dedicated cure sound was loaded.
     public void PlayCure()
     {
         if (_cureSfx != null)
@@ -78,10 +75,6 @@ public class AudioManager : IDisposable
         _musicSfx?.Dispose();
     }
 
-    // ── Loading helpers ───────────────────────────────────────────────────────
-
-    // Looks for the audio folder next to the executable, then three levels up
-    // (covers both `dotnet publish` and `dotnet run` from bin/Debug/net9.0/).
     private static string FindAudioFolder()
     {
         string[] candidates =
@@ -97,7 +90,6 @@ public class AudioManager : IDisposable
         return null;
     }
 
-    // Tries names[] first; if none found, takes the first unused file from available[].
     private static SoundEffect LoadByNames(
         string folder,
         string[] names,
@@ -121,7 +113,6 @@ public class AudioManager : IDisposable
             }
         }
 
-        // Fallback: grab any remaining .wav.
         if (available.Count > 0)
         {
             string path = available[0];

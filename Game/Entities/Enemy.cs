@@ -16,8 +16,6 @@ public class Enemy : Entity
     private Vector2 _startPosition;
     private float _pulseTimer;
 
-    // Sprite animation — null when sheet is unavailable (rectangle fallback active).
-    // Protected so MutantEnemy can replace it with its own sheet.
     protected AnimatedSprite _walkAnim;
 
     public Enemy(Vector2 position)
@@ -62,16 +60,12 @@ public class Enemy : Entity
 
         if (_walkAnim != null)
         {
-            // ── Sprite path ──────────────────────────────────────────────────
-            // Flip sprite to face the direction of movement.
             var effects = Velocity.X < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            // Cured enemies draw with a green tint instead of keeping a separate sprite.
             Color tint = IsCured ? Color.LightGreen : Color.White;
             _walkAnim.Draw(spriteBatch, Position, tint, effects);
         }
         else
         {
-            // ── Rectangle fallback (preserves original pulse animation) ─────
             if (IsCured)
             {
                 base.Draw(spriteBatch);

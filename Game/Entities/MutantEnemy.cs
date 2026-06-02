@@ -23,8 +23,6 @@ public class MutantEnemy : Enemy
         Height = 38;
         Velocity.X = PatrolSpeed;
 
-        // Override the walk animation with the mutant-specific sheet if available.
-        // HasDedicatedMutantSheet: 28×38 frames. Fallback: enemy sheet uses 24×32 frames.
         if (AssetManager.MutantSheet != null)
         {
             int fw = AssetManager.HasDedicatedMutantSheet ? 28 : 24;

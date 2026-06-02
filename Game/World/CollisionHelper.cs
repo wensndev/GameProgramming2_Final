@@ -45,7 +45,7 @@ public static class CollisionHelper
         int cMin = (int)(position.X / ts);
         int cMax = (int)((position.X + width - 1) / ts);
 
-        if (velocity.Y > 0) // falling
+        if (velocity.Y > 0)
         {
             int r = (int)((position.Y + height) / ts);
             for (int c = cMin; c <= cMax; c++)
@@ -63,7 +63,7 @@ public static class CollisionHelper
             for (int c = cMin; c <= cMax; c++)
             {
                 if (!map.IsSolid(c, r)) continue;
-                position.Y = (r + 1) * ts; // bump head on ceiling
+                position.Y = (r + 1) * ts; 
                 velocity.Y = 0;
                 break;
             }

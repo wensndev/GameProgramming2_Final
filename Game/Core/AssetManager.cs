@@ -14,7 +14,6 @@ public static class AssetManager
     public static Texture2D EnemySheet  { get; private set; }
     public static Texture2D MutantSheet { get; private set; }
 
-    // True when mutant_sheet.png was loaded independently (not fallen back to EnemySheet).
     public static bool HasDedicatedMutantSheet { get; private set; }
 
     public static void Load(GraphicsDevice graphicsDevice, ContentManager content)
@@ -40,8 +39,6 @@ public static class AssetManager
     public static void DrawRect(SpriteBatch sb, int x, int y, int w, int h, Color color)
         => sb.Draw(Pixel, new Rectangle(x, y, w, h), color);
 
-    // Tries Content/Sprites/ next to the executable, then three directories up
-    // (handles both dotnet publish output and dotnet run from bin/Debug/net9.0/).
     private static Texture2D TryLoadSprite(GraphicsDevice gd, string fileName)
     {
         string[] candidates =

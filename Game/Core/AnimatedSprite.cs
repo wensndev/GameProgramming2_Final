@@ -3,11 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Game.Core;
 
-// Minimal frame-cycling sprite animation. Draws one row of equally-sized frames.
 public class AnimatedSprite
 {
     private readonly Texture2D _texture;
-    private readonly int _startFrame;    // index of the first frame in the sheet row
+    private readonly int _startFrame;   
     private readonly int _frameCount;
     private readonly float _frameTime;
     private int _currentFrame;
@@ -15,9 +14,6 @@ public class AnimatedSprite
 
     public int FrameWidth  { get; }
     public int FrameHeight { get; }
-
-    // Parameters: startFrame = first frame index, frameCount = how many frames to cycle.
-    // Source rectangle: (startFrame + currentFrame) * frameWidth.
     public AnimatedSprite(Texture2D texture, int frameWidth, int frameHeight,
                           int startFrame, int frameCount, float frameTime)
     {
